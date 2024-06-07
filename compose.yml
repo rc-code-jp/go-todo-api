@@ -1,0 +1,62 @@
+services:
+  # Golang App
+  app:
+    build:
+      context: .
+      dockerfile: docker/app/Dockerfile
+    ports:
+      - 8080:8080
+    volumes:
+      - type: bind
+        source: .
+        target: /app
+      - type: volume
+        source: app-logs
+        target: /logs
+      # vscodeの拡張機能を保持
+      - vscode_server_volume:/root/.vscode-server
+    tty: true
+    command: sh -c 'air'
+    depends_on:
+      - mysql
+  # MySQL
+  mysql:
+    container_name: mysql
+    build:
+      context: .
+      dockerfile: ./docker/mysql/Dockerfile
+    ports:
+      - 3306:3306
+    volumes:
+      - type: volume
+        source: mysql-store
+        target: /var/lib/mysql
+        volume:
+          nocopy: true
+    environment:
+      - MYSQL_DATABASE=${DB_DATABASE}
+      - MYSQL_USER=${DB_USERNAME}
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
+  # phpMyAdmin
+  phpmyadmin:
+    build:
+      context: .
+      dockerfile: ./docker/phpmyadmin/Dockerfile
+    environment:
+      - PMA_HOST=${DB_HOST}
+      - PMA_USER=${DB_USERNAME}
+      - PMA_PASSWORD=${DB_PASSWORD}
+    ports:
+      - 8088:80
+    volumes:
+      - phpmyadmin-session-store:/sessions
+    depends_on:
+      - mysql
+# ボリュームの定義
+volumes:
+  mysql-store:
+  app-logs:
+  phpmyadmin-session-store:
+  vscode_server_volume:
+    driver: local

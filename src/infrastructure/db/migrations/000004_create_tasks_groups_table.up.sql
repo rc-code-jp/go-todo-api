@@ -1,0 +1,9 @@
+CREATE TABLE `task_groups` (
+  `id`         INT(11)     NOT NULL AUTO_INCREMENT,
+  `user_id`    INT(11)     NOT NULL,
+  `name`       VARCHAR     NULL,
+  `deleted_at` DATETIME(3) NULL,
+  `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  `updated_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+  PRIMARY KEY (`id`)
+)
