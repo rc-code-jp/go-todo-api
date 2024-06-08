@@ -1,28 +1,40 @@
 package main
 
 import (
-	"go-todo-api/src/infrastructure/db"
 	"fmt"
+	"os"
 
-	_ "github.com/jinzhu/gorm/dialects/mysql"
+	"go-todo-api/src/infrastructure/db"
+	"go-todo-api/src/interactor"
+	"go-todo-api/src/userinterface/http/router"
+	"go-todo-api/src/userinterface/http/validator"
+
+	"github.com/labstack/echo/v4"
 	"github.com/joho/godotenv"
 )
 
 func main() {
-	// loggerの初期化
-	// ToDo: ログのライブラリを初期化する（選定から）
+	// Echoのインスタンス作成
+	e := echo.New()
 
 	// .envファイルの読み込み
-	if err := godotenv.Load(); err != nil {
-		fmt.Println(".envファイルの読み込みに失敗しました")
-		return
+	err := godotenv.Load()
+  if err != nil {
+    e.Logger.Fatal("Error loading .env file")
+  }
+
+	// DBコネクション作成
+	conn := db.NewDBConnection()
+
+	// DI
+	interactor := interactor.NewInteractor(conn)
+
+	// ルーティング
+	e.Validator = validator.NewValidator()
+	handler := interactor.NewAppHandler()
+	router.SetRoutes(e, handler)
+
+	if err := e.Start(fmt.Sprintf(":%s", os.Getenv("SERVER_PORT"))); err != nil {
+		e.Logger.Fatal(fmt.Sprintf("Failed to start: %v", err))
 	}
-
-	// DB接続
-	db.InitializeDB()
-
-	// echoを初期化
-	// apiClient := presentation.NewApiClient()
-	// apiClient.RegisterRoute()
-	// apiClient.Start()
 }

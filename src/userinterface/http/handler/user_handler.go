@@ -2,12 +2,14 @@
 package handler
 
 import (
+	"context"
 	"crypto/sha1"
 	"fmt"
 	"net/http"
 	"strconv"
 	"time"
 
+	"go-todo-api/src/domain/model"
 	"go-todo-api/src/usecase"
 	"go-todo-api/src/userinterface/http/request"
 
@@ -65,12 +67,19 @@ func (handler *userHandler) CreateUser(c echo.Context) error {
 		return c.JSON(http.StatusUnprocessableEntity, err.Error())
 	}
 
+	ctx := c.Request().Context()
+	if ctx == nil {
+		ctx = context.Background()
+	}
+
 	userID, token, err := handler.UserUseCase.CreateUser(
+		ctx,
 		request.Name,
 		request.Email,
 		request.Password,
 		request.ImageFilePath,
 	)
+
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
@@ -92,7 +101,12 @@ func (handler *userHandler) Login(c echo.Context) error {
 		return c.JSON(http.StatusUnprocessableEntity, err.Error())
 	}
 
-	userID, token, err := handler.UserUseCase.Login(request.Email, request.Password)
+	ctx := c.Request().Context()
+	if ctx == nil {
+		ctx = context.Background()
+	}
+
+	userID, token, err := handler.UserUseCase.Login(ctx, request.Email, request.Password)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
@@ -107,7 +121,7 @@ func (handler *userHandler) Login(c echo.Context) error {
 func (handler *userHandler) GetUser(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		return c.JSON(http.StatusUnprocessableEntity, "ID：数値で入力してください。")
+		return c.JSON(http.StatusUnprocessableEntity, "IDは数値で入力してください。")
 	}
 
 	request := &request.GetUserRequest{ID: id}
@@ -115,7 +129,12 @@ func (handler *userHandler) GetUser(c echo.Context) error {
 		return c.JSON(http.StatusUnprocessableEntity, err.Error())
 	}
 
-	user, err := handler.UserUseCase.GetUser(id)
+	ctx := c.Request().Context()
+	if ctx == nil {
+		ctx = context.Background()
+	}
+
+	user, err := handler.UserUseCase.GetUser(ctx, id)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
@@ -127,7 +146,7 @@ func (handler *userHandler) GetUser(c echo.Context) error {
 func (handler *userHandler) UpdateUser(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		return c.JSON(http.StatusUnprocessableEntity, "ID：数値で入力してください。")
+		return c.JSON(http.StatusUnprocessableEntity, "IDは数値で入力してください。")
 	}
 
 	request := &request.UpdateUserRequest{ID: id}
@@ -138,12 +157,19 @@ func (handler *userHandler) UpdateUser(c echo.Context) error {
 		return c.JSON(http.StatusUnprocessableEntity, err.Error())
 	}
 
-	err = handler.UserUseCase.UpdateUser(
-		id,
-		request.Name,
-		request.Email,
-		request.Password,
-		request.ImageFilePath,
+	ctx := c.Request().Context()
+	if ctx == nil {
+		ctx = context.Background()
+	}
+
+	_, err = handler.UserUseCase.UpdateUser(
+		ctx,
+		&model.User{
+			ID:            id,
+			Name:          request.Name,
+			Email:         request.Email,
+			ImageFilePath: request.ImageFilePath,
+		},
 	)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err.Error())
@@ -164,7 +190,12 @@ func (handler *userHandler) DeleteUser(c echo.Context) error {
 		return c.JSON(http.StatusUnprocessableEntity, err.Error())
 	}
 
-	if err := handler.UserUseCase.DeleteUser(id); err != nil {
+	ctx := c.Request().Context()
+	if ctx == nil {
+		ctx = context.Background()
+	}
+
+	if err := handler.UserUseCase.DeleteUser(ctx, id); err != nil {
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
 

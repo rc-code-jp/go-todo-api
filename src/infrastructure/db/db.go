@@ -10,12 +10,12 @@ import (
 )
 
 // DB接続
-func SetupDB() *gorm.DB {
+func GetMysqlConnection() *gorm.DB {
 	user := os.Getenv("DB_USERNAME")
 	password := os.Getenv("DB_PASSWORD")
-	dbName := os.Getenv("DB_DATABASE")
 	host := os.Getenv("DB_HOST")
 	port := os.Getenv("DB_PORT")
+	dbName := os.Getenv("DB_DATABASE")
 
 	// 接続
 	conn := fmt.Sprintf(
@@ -42,16 +42,6 @@ func SetupDB() *gorm.DB {
 }
 
 // DB接続
-func InitializeDB() {
-	db := SetupDB()
-	if db == nil {
-		fmt.Println("DB接続に失敗しました")
-		return
-	}
-	defer func(db *gorm.DB) {
-		if err := db.Close(); err != nil {
-			fmt.Println("DB切断に失敗しました")
-			return
-		}
-	}(db)
+func NewDBConnection() *gorm.DB {
+	return GetMysqlConnection()
 }
