@@ -47,7 +47,19 @@ func SetRoutes(e *echo.Echo, handler handler.AppHandler) {
 			},
 		},
 	))
+	authenticatedGroup.Use(extractUserID)
 	authenticatedGroup.GET("/me", handler.GetMe)
-	authenticatedGroup.PUT("/users/:id", handler.UpdateUser)
-	authenticatedGroup.DELETE("/users/:id", handler.DeleteUser)
+	authenticatedGroup.DELETE("/me", handler.DeleteUser)
+	authenticatedGroup.PUT("/me", handler.UpdateUser)
+}
+
+// IdをContextに入れる
+func extractUserID(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+			user := c.Get("user").(*jwt.Token)
+			claims := user.Claims.(*jwtClaims)
+			userId := claims.ID
+			c.Set("userId", userId)
+			return next(c)
+	}
 }

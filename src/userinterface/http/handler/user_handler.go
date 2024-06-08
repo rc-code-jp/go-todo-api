@@ -6,7 +6,6 @@ import (
 	"crypto/sha1"
 	"fmt"
 	"net/http"
-	"strconv"
 	"time"
 
 	"go-todo-api/src/domain/model"
@@ -119,13 +118,14 @@ func (handler *userHandler) Login(c echo.Context) error {
 
 // ユーザー取得
 func (handler *userHandler) GetMe(c echo.Context) error {
+	userId := c.Get("userId").(int)
 
 	ctx := c.Request().Context()
 	if ctx == nil {
 		ctx = context.Background()
 	}
 
-	user, err := handler.UserUseCase.GetUser(ctx, 0)
+	user, err := handler.UserUseCase.GetUser(ctx, userId)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
@@ -135,12 +135,9 @@ func (handler *userHandler) GetMe(c echo.Context) error {
 
 // ユーザー更新
 func (handler *userHandler) UpdateUser(c echo.Context) error {
-	id, err := strconv.Atoi(c.Param("id"))
-	if err != nil {
-		return c.JSON(http.StatusUnprocessableEntity, "IDは数値で入力してください。")
-	}
+	userId := c.Get("userId").(int)
 
-	request := &request.UpdateUserRequest{ID: id}
+	request := &request.UpdateUserRequest{ID: userId}
 	if err := c.Bind(request); err != nil {
 		return c.JSON(http.StatusUnprocessableEntity, err.Error())
 	}
@@ -153,12 +150,11 @@ func (handler *userHandler) UpdateUser(c echo.Context) error {
 		ctx = context.Background()
 	}
 
-	_, err = handler.UserUseCase.UpdateUser(
+	_, err := handler.UserUseCase.UpdateUser(
 		ctx,
 		&model.User{
-			ID:            id,
+			ID:            userId,
 			Name:          request.Name,
-			Email:         request.Email,
 			ImageFilePath: request.ImageFilePath,
 		},
 	)
@@ -171,12 +167,14 @@ func (handler *userHandler) UpdateUser(c echo.Context) error {
 
 // ユーザー削除
 func (handler *userHandler) DeleteUser(c echo.Context) error {
+	userId := c.Get("userId").(int)
+
 	ctx := c.Request().Context()
 	if ctx == nil {
 		ctx = context.Background()
 	}
 
-	if err := handler.UserUseCase.DeleteUser(ctx, 0); err != nil {
+	if err := handler.UserUseCase.DeleteUser(ctx, userId); err != nil {
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
 
