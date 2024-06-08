@@ -16,11 +16,6 @@ type (
 		Password string `json:"password" validate:"required,max=100"`
 	}
 
-	// GetUserRequest ユーザー詳細取得リクエスト
-	GetUserRequest struct {
-		ID int `json:"id" validate:"min=1"`
-	}
-
 	// UpdateUserRequest ユーザー更新リクエスト
 	UpdateUserRequest struct {
 		ID            int    `json:"id" validate:"required,min=1"`
@@ -28,10 +23,5 @@ type (
 		Email         string `json:"email" validate:"required,email,max=100"`
 		Password      string `json:"password" validate:"max=100"`
 		ImageFilePath string `json:"image_file_path" validate:"max=100"`
-	}
-
-	// DeleteUserRequest ユーザー削除リクエスト
-	DeleteUserRequest struct {
-		ID int `json:"id" validate:"min=1"`
 	}
 )

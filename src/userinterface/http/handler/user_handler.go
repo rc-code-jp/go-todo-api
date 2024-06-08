@@ -23,7 +23,7 @@ type (
 		UploadImageFile(c echo.Context) error
 		CreateUser(c echo.Context) error
 		Login(c echo.Context) error
-		GetUser(c echo.Context) error
+		GetMe(c echo.Context) error
 		UpdateUser(c echo.Context) error
 		DeleteUser(c echo.Context) error
 	}
@@ -39,7 +39,7 @@ func NewUserHandler(usecase usecase.UserUseCase) UserHandler {
 	return &userHandler{usecase}
 }
 
-// UploadImageFile　ユーザープロフィール画像をアップロードし、画像ファイルのパスを返す。
+// 画像ファイルアップロード
 func (handler *userHandler) UploadImageFile(c echo.Context) error {
 	img, err := imageupload.Process(c.Request(), "ImageFile")
 	if err != nil {
@@ -56,7 +56,7 @@ func (handler *userHandler) UploadImageFile(c echo.Context) error {
 	return c.String(http.StatusOK, "images/"+fileName)
 }
 
-// CreateUser 登録
+// ユーザー作成
 func (handler *userHandler) CreateUser(c echo.Context) error {
 	request := new(request.CreateUserRequest)
 	if err := c.Bind(request); err != nil {
@@ -90,7 +90,7 @@ func (handler *userHandler) CreateUser(c echo.Context) error {
 	})
 }
 
-// Login ログイン。ユーザーID、JWTトークンを返す。
+// ログイン
 func (handler *userHandler) Login(c echo.Context) error {
 	request := new(request.LoginRequest)
 	if err := c.Bind(request); err != nil {
@@ -117,24 +117,15 @@ func (handler *userHandler) Login(c echo.Context) error {
 	})
 }
 
-// GetUser 詳細取得
-func (handler *userHandler) GetUser(c echo.Context) error {
-	id, err := strconv.Atoi(c.Param("id"))
-	if err != nil {
-		return c.JSON(http.StatusUnprocessableEntity, "IDは数値で入力してください。")
-	}
-
-	request := &request.GetUserRequest{ID: id}
-	if err := c.Validate(request); err != nil {
-		return c.JSON(http.StatusUnprocessableEntity, err.Error())
-	}
+// ユーザー取得
+func (handler *userHandler) GetMe(c echo.Context) error {
 
 	ctx := c.Request().Context()
 	if ctx == nil {
 		ctx = context.Background()
 	}
 
-	user, err := handler.UserUseCase.GetUser(ctx, id)
+	user, err := handler.UserUseCase.GetUser(ctx, 0)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
@@ -142,7 +133,7 @@ func (handler *userHandler) GetUser(c echo.Context) error {
 	return c.JSON(http.StatusOK, user)
 }
 
-// UpdateUser 更新
+// ユーザー更新
 func (handler *userHandler) UpdateUser(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -178,24 +169,14 @@ func (handler *userHandler) UpdateUser(c echo.Context) error {
 	return c.NoContent(http.StatusOK)
 }
 
-// DeleteUser 削除
+// ユーザー削除
 func (handler *userHandler) DeleteUser(c echo.Context) error {
-	id, err := strconv.Atoi(c.Param("id"))
-	if err != nil {
-		return c.JSON(http.StatusUnprocessableEntity, "IDは数値で入力してください。")
-	}
-
-	request := request.DeleteUserRequest{ID: id}
-	if err := c.Validate(&request); err != nil {
-		return c.JSON(http.StatusUnprocessableEntity, err.Error())
-	}
-
 	ctx := c.Request().Context()
 	if ctx == nil {
 		ctx = context.Background()
 	}
 
-	if err := handler.UserUseCase.DeleteUser(ctx, id); err != nil {
+	if err := handler.UserUseCase.DeleteUser(ctx, 0); err != nil {
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
 

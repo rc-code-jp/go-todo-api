@@ -34,13 +34,13 @@ func (cv *customValidator) Validate(i interface{}) error {
 		var typ = err.Tag()
 		switch typ {
 		case "required":
-			errorMessage = fmt.Sprintf("%s：必須です。", err.Field())
+			errorMessage = fmt.Sprintf("%sは必須です。", err.Field())
 		case "email":
-			errorMessage = fmt.Sprintf("%s：正しい形式で入力してください。", err.Field())
+			errorMessage = fmt.Sprintf("%sは正しい形式で入力してください。", err.Field())
 		case "min":
-			errorMessage = fmt.Sprintf("%s：%s以上の値を入力してください。", err.Field(), err.Param())
+			errorMessage = fmt.Sprintf("%sは%s以上の値を入力してください。", err.Field(), err.Param())
 		default:
-			errorMessage = fmt.Sprintf("%s：正しい値を入力してください。", err.Field())
+			errorMessage = fmt.Sprintf("%sは正しい値を入力してください。", err.Field())
 		}
 
 		errorMessages = append(errorMessages, errorMessage)
