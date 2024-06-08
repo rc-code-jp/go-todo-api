@@ -7,5 +7,5 @@ CREATE TABLE `refresh_tokens` (
   `created_at`   DATETIME(3)  NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
   `updated_at`   DATETIME(3)  NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
   PRIMARY KEY (`id`),
-  UNIQUE KEY `refresh_token_uuid_unique` (`uuid`),
+  UNIQUE KEY `refresh_token_uuid_unique` (`uuid`)
 )

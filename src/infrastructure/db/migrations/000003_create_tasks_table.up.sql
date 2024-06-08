@@ -6,7 +6,7 @@ CREATE TABLE `tasks` (
   `date`        DATE           NOT NULL,
   `time`        TIME           NULL,
   `note`        TEXT           NULL,
-  `place`       VARCHAR        NULL,
+  `place`       VARCHAR(255)   NULL,
   `deleted_at`  DATETIME(3)    NULL,
   `created_at`  DATETIME(3)    NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
   `updated_at`  DATETIME(3)    NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),

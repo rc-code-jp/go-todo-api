@@ -25,6 +25,8 @@
     "staticcheck": false
   },
   "cSpell.words": [
-    "gorm"
+    "gorm",
+    "usecase",
+    "userinterface"
   ]
 }
