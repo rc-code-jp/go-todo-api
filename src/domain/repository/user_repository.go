@@ -1,4 +1,3 @@
-// Package repository Domain Service層のリポジトリ
 package repository
 
 import (
@@ -6,7 +5,6 @@ import (
 	"go-todo-api/src/domain/model"
 )
 
-// UserRepository usersテーブルへのアクセスを行うインターフェース。
 type UserRepository interface {
 	Create(ctx context.Context, user *model.User) (*model.User, error)
 	FetchByEmail(ctx context.Context, email string) (*model.User, error)

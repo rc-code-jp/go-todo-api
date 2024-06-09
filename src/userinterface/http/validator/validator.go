@@ -1,4 +1,3 @@
-// Package validator バリデーター
 package validator
 
 import (
@@ -10,17 +9,14 @@ import (
 	"gopkg.in/go-playground/validator.v9"
 )
 
-// customValidator 構造体
 type customValidator struct {
 	validator *validator.Validate
 }
 
-// NewValidator バリデーターを生成
 func NewValidator() echo.Validator {
 	return &customValidator{validator.New()}
 }
 
-// Validate バリデーション実行
 func (cv *customValidator) Validate(i interface{}) error {
 	err := cv.validator.Struct(i)
 	if err == nil {

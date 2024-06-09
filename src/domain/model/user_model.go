@@ -1,11 +1,9 @@
-// Package model Domain Model
 package model
 
 import (
 	"time"
 )
 
-// User Usersテーブルに対応する構造体。
 type User struct {
 	ID             int        `json:"id" gorm:"primary_key"`
 	Name           string     `json:"name" gorm:"type:varchar(256);not null;default:''"`

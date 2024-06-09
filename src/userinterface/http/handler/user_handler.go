@@ -1,4 +1,3 @@
-// Package handler UI層
 package handler
 
 import (
@@ -17,7 +16,6 @@ import (
 )
 
 type (
-	// UserHandler interface
 	UserHandler interface {
 		UploadImageFile(c echo.Context) error
 		CreateUser(c echo.Context) error
@@ -27,13 +25,11 @@ type (
 		DeleteUser(c echo.Context) error
 	}
 
-	// userHandler 構造体
 	userHandler struct {
 		UserUseCase usecase.UserUseCase
 	}
 )
 
-// NewUserHandler UserHandlerを生成。
 func NewUserHandler(usecase usecase.UserUseCase) UserHandler {
 	return &userHandler{usecase}
 }

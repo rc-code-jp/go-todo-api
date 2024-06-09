@@ -1,4 +1,3 @@
-// Package router ルーティング定義
 package router
 
 import (

@@ -1,4 +1,3 @@
-// Package usecase Application Service層。
 package usecase
 
 import (
