@@ -21,7 +21,7 @@ type UserUseCase interface {
 		imageFilePath string,
 	) (userID int, token string, err error)
 	Login(ctx context.Context, email string, password string) (userID int, token string, err error)
-	UpdateUser(ctx context.Context, u *model.User) (*model.User, error)
+	UpdateUser(ctx context.Context, m *model.User) (*model.User, error)
 	DeleteUser(ctx context.Context, id int) error
 }
 
@@ -78,7 +78,7 @@ func (usecase *userUseCase) Login(ctx context.Context, email string, password st
 
 // ユーザー取得
 func (usecase *userUseCase) GetUser(ctx context.Context, id int) (*model.User, error) {
-	user, err := usecase.UserRepository.FetchByID(ctx, id)
+	user, err := usecase.UserRepository.FindByID(ctx, id)
 	if err != nil {
 		return nil, err
 	}

@@ -46,9 +46,15 @@ func SetRoutes(e *echo.Echo, handler handler.AppHandler) {
 		},
 	))
 	authenticatedGroup.Use(extractUserID)
+	// ユーザー
 	authenticatedGroup.GET("/me", handler.GetMe)
 	authenticatedGroup.DELETE("/me", handler.DeleteUser)
 	authenticatedGroup.PUT("/me", handler.UpdateUser)
+	// タスクグループ
+	authenticatedGroup.GET("/task-groups", handler.GetAllTaskGroup)
+	authenticatedGroup.POST("/task-groups", handler.CreateTaskGroup)
+	authenticatedGroup.PUT("/task-groups/:id", handler.UpdateTaskGroup)
+	authenticatedGroup.DELETE("/task-groups/:id", handler.DeleteTaskGroup)
 }
 
 // IdをContextに入れる

@@ -29,13 +29,11 @@ func NewUserHandler(usecase usecase.UserUseCase) UserHandler {
 	return &userHandler{usecase}
 }
 
-// ユーザー作成
 func (handler *userHandler) CreateUser(c echo.Context) error {
 	request := &request.CreateUserRequest{}
 	if err := c.Bind(request); err != nil {
 		return c.JSON(http.StatusUnprocessableEntity, err.Error())
 	}
-
 	if err := c.Validate(request); err != nil {
 		return c.JSON(http.StatusUnprocessableEntity, err.Error())
 	}
@@ -63,7 +61,6 @@ func (handler *userHandler) CreateUser(c echo.Context) error {
 	})
 }
 
-// ログイン
 func (handler *userHandler) Login(c echo.Context) error {
 	request := &request.LoginRequest{}
 	if err := c.Bind(request); err != nil {
@@ -89,7 +86,6 @@ func (handler *userHandler) Login(c echo.Context) error {
 	})
 }
 
-// ユーザー取得
 func (handler *userHandler) GetMe(c echo.Context) error {
 	userId := c.Get("userId").(int)
 
@@ -106,7 +102,6 @@ func (handler *userHandler) GetMe(c echo.Context) error {
 	return c.JSON(http.StatusOK, user)
 }
 
-// ユーザー更新
 func (handler *userHandler) UpdateUser(c echo.Context) error {
 	userId := c.Get("userId").(int)
 
@@ -138,7 +133,6 @@ func (handler *userHandler) UpdateUser(c echo.Context) error {
 	return c.NoContent(http.StatusOK)
 }
 
-// ユーザー削除
 func (handler *userHandler) DeleteUser(c echo.Context) error {
 	userId := c.Get("userId").(int)
 

@@ -16,34 +16,35 @@ func NewUserRepository(Conn *gorm.DB) repository.UserRepository {
 	return &userRepository{Conn}
 }
 
-func (repository *userRepository) Create(ctx context.Context, u *model.User) (*model.User, error) {
-	err := repository.Conn.Create(u).Error
-	return u, err
+func (repository *userRepository) Create(ctx context.Context, m *model.User) (*model.User, error) {
+	err := repository.Conn.Create(m).Error
+	return m, err
 }
 
 func (repository *userRepository) FetchByEmail(ctx context.Context, email string) (*model.User, error) {
-	var user model.User
-
-	err := repository.Conn.Where("email = ?", email).First(&user).Error
-	return &user, err
+	var m model.User
+	err := repository.Conn.Where("email = ?", email).First(&m).Error
+	return &m, err
 }
 
-func (repository *userRepository) FetchByID(ctx context.Context, id int) (*model.User, error) {
-	u := model.User{ID: id}
-	if err := repository.Conn.First(&u).Error; err != nil {
+func (repository *userRepository) FindByID(ctx context.Context, id int) (*model.User, error) {
+	m := model.User{ID: id}
+	err := repository.Conn.First(&m).Error;
+	if err != nil {
 		return nil, err
 	}
-	u.HashedPassword = ""
+	m.HashedPassword = ""
 
-	return &u, nil
+	return &m, nil
 }
 
-func (repository *userRepository) Update(ctx context.Context, u *model.User) (*model.User, error) {
-	err := repository.Conn.Model(u).Update(u).Error
-	return u, err
+func (repository *userRepository) Update(ctx context.Context, m *model.User) (*model.User, error) {
+	err := repository.Conn.Model(m).Update(m).Error
+	return m, err
 }
 
 func (repository *userRepository) Delete(ctx context.Context, id int) error {
-	user := model.User{ID: id}
-	return repository.Conn.Delete(&user).Error
+	m := model.User{ID: id}
+	// gormはDeletedAtが含まれている場合は論理削除を行う
+	return repository.Conn.Delete(&m).Error
 }
