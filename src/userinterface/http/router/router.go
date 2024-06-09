@@ -32,7 +32,6 @@ func SetRoutes(e *echo.Echo, handler handler.AppHandler) {
 	// アクセス制限なし
 	unauthenticatedGroup := e.Group("/api/v1")
 	unauthenticatedGroup.GET("/hc", handler.HealthCheck)
-	unauthenticatedGroup.POST("/users/images", handler.UploadImageFile)
 	unauthenticatedGroup.POST("/users", handler.CreateUser)
 	unauthenticatedGroup.POST("/login", handler.Login)
 
