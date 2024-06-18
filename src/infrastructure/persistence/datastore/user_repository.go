@@ -33,7 +33,7 @@ func (repository *userRepository) FindByID(ctx context.Context, id int) (*model.
 	if err != nil {
 		return nil, err
 	}
-	m.HashedPassword = ""
+	m.HashedPassword = "" // パスワードは返さない
 
 	return &m, nil
 }

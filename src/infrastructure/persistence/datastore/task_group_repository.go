@@ -21,7 +21,7 @@ func (repository *taskGroupRepository) Create(ctx context.Context, m *model.Task
 	return m, err
 }
 
-func (repository *taskGroupRepository) All(ctx context.Context, userId int) (*[]model.TaskGroup, error) {
+func (repository *taskGroupRepository) AllByUserId(ctx context.Context, userId int) (*[]model.TaskGroup, error) {
 	var models []model.TaskGroup
 	err := repository.Conn.Where("user_id = ?", userId).Find(&models).Error
 	if err != nil {

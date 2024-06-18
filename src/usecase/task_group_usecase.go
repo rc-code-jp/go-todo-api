@@ -9,10 +9,10 @@ import (
 )
 
 type TaskGroupUseCase interface {
-	GetAllTaskGroup(ctx context.Context, taskGroupId int) (*[]model.TaskGroup, error)
+	GetAllTaskGroup(ctx context.Context, userId int) (*[]model.TaskGroup, error)
 	GetTaskGroup(ctx context.Context, id int, userId int) (*model.TaskGroup, error)
 	CreateTaskGroup(ctx context.Context, m *model.TaskGroup) (*model.TaskGroup, error)
-	UpdateTaskGroup(ctx context.Context, m *model.TaskGroup) (*model.TaskGroup, error)
+	UpdateTaskGroup(ctx context.Context, m *model.TaskGroup, userId int) (*model.TaskGroup, error)
 	DeleteTaskGroup(ctx context.Context, id int, userId int) error
 }
 
@@ -24,12 +24,10 @@ func NewTaskGroupUseCase(repository repository.TaskGroupRepository) TaskGroupUse
 	return &taskGroupUseCase{repository}
 }
 
-// GetAllTaskGroup get all task group
 func (u *taskGroupUseCase) GetAllTaskGroup(ctx context.Context, userId int) (*[]model.TaskGroup, error) {
-	return u.TaskGroupRepository.All(ctx, userId)
+	return u.TaskGroupRepository.AllByUserId(ctx, userId)
 }
 
-// GetTaskGroup get task group
 func (u *taskGroupUseCase) GetTaskGroup(ctx context.Context, id int, userId int) (*model.TaskGroup, error) {
 	model, err := u.TaskGroupRepository.FindByID(ctx, id)
 	// ユーザーが一致するかどうか確認
@@ -39,21 +37,18 @@ func (u *taskGroupUseCase) GetTaskGroup(ctx context.Context, id int, userId int)
 	return model, err
 }
 
-// CreateTaskGroup create task group
 func (u *taskGroupUseCase) CreateTaskGroup(ctx context.Context, m *model.TaskGroup) (*model.TaskGroup, error) {
 	return u.TaskGroupRepository.Create(ctx, m)
 }
 
-// UpdateTaskGroup update task group
-func (u *taskGroupUseCase) UpdateTaskGroup(ctx context.Context, m *model.TaskGroup) (*model.TaskGroup, error) {
+func (u *taskGroupUseCase) UpdateTaskGroup(ctx context.Context, m *model.TaskGroup, userId int) (*model.TaskGroup, error) {
 	// ユーザーが一致するかどうか確認
-	if m.UserID != m.UserID {
+	if m.UserID != userId {
 		return nil, errors.New("task group not found")
 	}
 	return u.TaskGroupRepository.Update(ctx, m)
 }
 
-// DeleteTaskGroup delete task group
 func (u *taskGroupUseCase) DeleteTaskGroup(ctx context.Context, id int, userId int) error {
 	// ユーザーが一致するかどうか確認
 	model, err := u.TaskGroupRepository.FindByID(ctx, id)

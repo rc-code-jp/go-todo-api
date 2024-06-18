@@ -101,6 +101,7 @@ func (handler *taskGroupHandler) UpdateTaskGroup(c echo.Context) error {
 			ID:            userId,
 			Name:          request.Name,
 		},
+		userId,
 	)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err.Error())
