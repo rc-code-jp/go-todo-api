@@ -55,6 +55,12 @@ func SetRoutes(e *echo.Echo, handler handler.AppHandler) {
 	authenticatedGroup.POST("/task-groups", handler.CreateTaskGroup)
 	authenticatedGroup.PUT("/task-groups/:id", handler.UpdateTaskGroup)
 	authenticatedGroup.DELETE("/task-groups/:id", handler.DeleteTaskGroup)
+	// タスク
+	authenticatedGroup.GET("/task-groups/:taskGroupId/tasks", handler.GetAllTask)
+	authenticatedGroup.GET("/tasks/:id", handler.GetTask)
+	authenticatedGroup.POST("/tasks", handler.CreateTask)
+	authenticatedGroup.PUT("/tasks/:id", handler.UpdateTask)
+	authenticatedGroup.DELETE("/tasks/:id", handler.DeleteTask)
 }
 
 // IdをContextに入れる

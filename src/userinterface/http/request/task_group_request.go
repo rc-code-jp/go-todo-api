@@ -9,8 +9,4 @@ type (
 		ID            int `validate:"min=1"`
 		Name          string `json:"name" validate:"max=100"`
 	}
-
-	DeleteTaskGroupRequest struct {
-		ID            int `validate:"min=1"`
-	}
 )

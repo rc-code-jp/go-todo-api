@@ -25,6 +25,7 @@ type appHandler struct {
 	handler.UserHandler
 	handler.HcHandler
 	handler.TaskGroupHandler
+	handler.TaskHandler
 }
 
 func (i *interactor) NewAppHandler() handler.AppHandler {
@@ -32,6 +33,7 @@ func (i *interactor) NewAppHandler() handler.AppHandler {
 	appHandler.UserHandler = i.NewUserHandler()
 	appHandler.HcHandler = i.NewHcHandler()
 	appHandler.TaskGroupHandler = i.NewTaskGroupHandler()
+	appHandler.TaskHandler = i.NewTaskHandler()
 	return appHandler
 }
 
@@ -60,5 +62,16 @@ func (interactor *interactor) NewTaskGroupUseCase() usecase.TaskGroupUseCase {
 }
 func (interactor *interactor) NewTaskGroupHandler() handler.TaskGroupHandler {
 	return handler.NewTaskGroupHandler(interactor.NewTaskGroupUseCase())
+}
+
+// タスク
+func (interactor *interactor) NewTaskRepository() repository.TaskRepository {
+	return datastore.NewTaskRepository(interactor.Conn)
+}
+func (interactor *interactor) NewTaskUseCase() usecase.TaskUseCase {
+	return usecase.NewTaskUseCase(interactor.NewTaskRepository(), interactor.NewTaskGroupRepository())
+}
+func (interactor *interactor) NewTaskHandler() handler.TaskHandler {
+	return handler.NewTaskHandler(interactor.NewTaskUseCase())
 }
 
